@@ -47,7 +47,7 @@ Make sure you have the following installed:
    yarn dev
    ```
 
-4. Open your browser and navigate to `http://localhost:3000`.
+4. Open your browser and navigate to `http://localhost:5173`.
 
 ## Usage
 - Enter the monthly SIP amount, the annual interest rate, and the investment duration.
