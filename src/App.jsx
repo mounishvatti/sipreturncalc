@@ -1,11 +1,91 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useCallback, useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import "./App.css";
+import ComponentRange from "./components/ComponentRange";
+import { Doughnut } from 'react-chartjs-2';
 
 function App() {
-  const [amount, setAmount] = useState(25000);
+  const [amount, setAmount] = useState(25000); // Monthly investment
+  const [returns, setReturns] = useState(8); // Annual return rate in percentage
+  const [duration, setDuration] = useState(10); // Investment duration in years
+  const [investedAmount, setInvestedAmount] = useState(0); // Total invested amount
+  const [estReturn, setEstReturn] = useState(0); // Estimated return
+  const [futureValue, setFutureValue] = useState(0); // Future value of SIP
+
+  const calculateFutureValue = useCallback(() => {
+    const monthlyRate = returns / 12 / 100; // Convert annual rate to monthly and percentage to decimal
+    const totalInstallments = duration * 12; // Total number of installments (months)
+
+    // Future value of SIP formula
+    const fv =
+      amount *
+      ((Math.pow(1 + monthlyRate, totalInstallments) - 1) / monthlyRate) *
+      (1 + monthlyRate);
+
+    setFutureValue(Math.round(fv));
+  }, [amount, returns, duration]);
+
+  const calculateInvestedAmount = useCallback(() => {
+    setInvestedAmount(Math.round(amount * duration * 12));
+  }, [amount, duration]);
+
+  const calculateEstimatedReturn = useCallback(() => {
+    setEstReturn(Math.round(futureValue - investedAmount));
+  }, [futureValue, investedAmount]);
+
+  useEffect(() => {
+    calculateFutureValue();
+    calculateInvestedAmount();
+    calculateEstimatedReturn();
+  }, [
+    amount,
+    returns,
+    duration,
+    calculateFutureValue,
+    calculateInvestedAmount,
+    calculateEstimatedReturn,
+  ]);
+
+  const formatNumber = (num) => {
+    return num.toLocaleString();
+  };
+
+  const data = {
+    labels: ["Invested Amount", "Estimated Returns"],
+    datasets: [
+      {
+        data: [investedAmount, estReturn],
+        backgroundColor: ["rgb(102, 60, 112)", "rgb(255, 199, 132)"],
+        hoverBackgroundColor: ["rgb(82, 50, 92)", "rgb(235, 179, 112)"], // Optional: colors on hover
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: "bottom",
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem) {
+            return `${tooltipItem.label}: ₹${tooltipItem.raw.toLocaleString()}`;
+          },
+        },
+      },
+    },
+  };
+
+  const MyComponent = () => {
+    return (
+      <div style={{ width: "300px", height: "300px" }}>
+        <Doughnut data={data} options={options} />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -17,66 +97,66 @@ function App() {
           <span className="text-green-500">ease</span> 🥳
         </h1>
       </div>
-      <div className="flex items-center justify-center p-9">
-        <div className="border-white/20 border p-4 rounded-lg w-8/12">
-          <div>
-            <div className="flex items-center justify-between">
-              <label className="text-white text-lg font-semibold px-3">
-                Monthly Investment
-              </label>
-              <span className="bg-green-500/50 px-9 py-1 rounded-md">
-                ₹ {amount}
-              </span>
-            </div>
-            <div className="flex w-full">
-              <input
-                type="range"
-                className="w-96 bg-transparent cursor-pointer appearance-none disabled:opacity-50 disabled:pointer-events-none focus:outline-none p-4
-  [&::-webkit-slider-thumb]:w-2.5
-  [&::-webkit-slider-thumb]:h-2.5
-  [&::-webkit-slider-thumb]:-mt-0.5
-  [&::-webkit-slider-thumb]:appearance-none
-  [&::-webkit-slider-thumb]:bg-white
-  [&::-webkit-slider-thumb]:shadow-[0_0_0_4px_rgba(125,219,136,1)]
-  [&::-webkit-slider-thumb]:rounded-full
-  [&::-webkit-slider-thumb]:transition-all
-  [&::-webkit-slider-thumb]:duration-150
-  [&::-webkit-slider-thumb]:ease-in-out
-  [&::-webkit-slider-thumb]:dark:bg-neutral-700
-
-  [&::-moz-range-thumb]:w-2.5
-  [&::-moz-range-thumb]:h-2.5
-  [&::-moz-range-thumb]:appearance-none
-  [&::-moz-range-thumb]:bg-white
-  [&::-moz-range-thumb]:border-4
-  [&::-moz-range-thumb]:border-green-600
-  [&::-moz-range-thumb]:rounded-full
-  [&::-moz-range-thumb]:transition-all
-  [&::-moz-range-thumb]:duration-150
-  [&::-moz-range-thumb]:ease-in-out
-
-  [&::-webkit-slider-runnable-track]:w-full
-  [&::-webkit-slider-runnable-track]:h-2
-  [&::-webkit-slider-runnable-track]:bg-gray-100
-  [&::-webkit-slider-runnable-track]:rounded-full
-  [&::-webkit-slider-runnable-track]:dark:bg-neutral-700
-
-  [&::-moz-range-track]:w-full
-  [&::-moz-range-track]:h-2
-  [&::-moz-range-track]:bg-gray-100
-  [&::-moz-range-track]:rounded-full"
-                id="basic-range-slider-usage"
-                aria-orientation="horizontal"
-                min={500}
-                step={500}
-                max={10000000}
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </div>
-          </div>
+      <div className="flex flex-row items-center justify-between p-9">
+        <div className="border-white/20 border p-8 rounded-lg w-1/2">
+          <ComponentRange
+            labeltext="Monthly Investment"
+            units="INR"
+            param1={amount}
+            setParam1={setAmount}
+            minval={0}
+            maxval={1000000}
+            stepcount={500}
+          />
+          <ComponentRange
+            labeltext="Expected Return Rate p.a (%)"
+            units="%"
+            param1={returns}
+            setParam1={setReturns}
+            minval={1}
+            maxval={30}
+            stepcount={0.1}
+          />
+          <ComponentRange
+            labeltext="Time Period"
+            units="Yr"
+            param1={duration}
+            setParam1={setDuration}
+            minval={1}
+            maxval={40}
+            stepcount={1}
+          />
         </div>
       </div>
+      <div className="flex flex-row justify-between p-9 w-1/2">
+        <div>
+          <h1 className="text-white/50 p-3">
+            Invested Amount{" "}
+            <span className="text-white/80 font-semibold">
+              ₹{formatNumber(investedAmount)}
+            </span>
+          </h1>
+        </div>
+        <div>
+          <h1 className="text-white/50 p-3">
+            Estimated Return{" "}
+            <span className="text-white/80 font-semibold">
+              ₹{formatNumber(estReturn)}
+            </span>
+          </h1>
+        </div>
+        <div>
+          <h1 className="text-white/50 p-3">
+            Total Returns{" "}
+            <span className="text-white/80 font-semibold">
+              ₹{formatNumber(futureValue)}
+            </span>
+          </h1>
+        </div>
+      </div>
+      {/* <div className="flex flex-col items-center justify-between p-9">
+        <MyComponent />
+      </div> */}
     </>
   );
 }
