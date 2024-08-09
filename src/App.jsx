@@ -2,7 +2,8 @@ import { useCallback, useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import "./App.css";
 import ComponentRange from "./components/ComponentRange";
-import { Doughnut } from 'react-chartjs-2';
+import { Doughnut } from "react-chartjs-2";
+import moneysvgrepo from '/src/assets/moneysvgrepo.svg'
 
 function App() {
   const [amount, setAmount] = useState(25000); // Monthly investment
@@ -85,22 +86,24 @@ function App() {
         <Doughnut data={data} options={options} />
       </div>
     );
-  }
+  };
 
   return (
     <>
       <Navbar />
-      <div>
-        <h1 className="text-lg text-gray-200 p-4">
-          Calculate your SIP{" "}
-          <span className="text-purple-400 underline">returns</span> with{" "}
-          <span className="text-green-500">ease</span> 🥳
+      <div className="font-sans">
+        <h1 className="text-lg text-gray-200 p-4 pt-6">
+          <span className="bg-green-900/30 rounded-full px-7 py-2 border-2 border-green-300/30">
+            Calculate your SIP{" "}
+            <span className="text-purple-400">returns</span> with{" "}
+            <span className="text-green-500">ease</span> 🥳
+          </span>
         </h1>
       </div>
-      <div className="flex flex-row items-center justify-between p-9">
+      <div className="flex flex-row items-center justify-between pt-32 font-sans">
         <div className="border-white/20 border p-8 rounded-lg w-1/2">
           <ComponentRange
-            labeltext="Monthly Investment"
+            labeltext="Monthly Investment (INR)"
             units="INR"
             param1={amount}
             setParam1={setAmount}
@@ -118,7 +121,7 @@ function App() {
             stepcount={0.1}
           />
           <ComponentRange
-            labeltext="Time Period"
+            labeltext="Time Period (Yr)"
             units="Yr"
             param1={duration}
             setParam1={setDuration}
@@ -157,6 +160,11 @@ function App() {
       {/* <div className="flex flex-col items-center justify-between p-9">
         <MyComponent />
       </div> */}
+      <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-between p-9">
+          <p className="text-white/80 text-lg">
+            Made with ❤️ by <a href="https://github.com/mounishvatti" className="text-green-300">Mounish Vatti</a>
+          </p>
+        </div>
     </>
   );
 }
