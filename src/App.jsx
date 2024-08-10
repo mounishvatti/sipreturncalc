@@ -13,6 +13,18 @@ function App() {
   const [investedAmount, setInvestedAmount] = useState(0); // Total invested amount
   const [estReturn, setEstReturn] = useState(0); // Estimated return
   const [futureValue, setFutureValue] = useState(0); // Future value of SIP
+  const [chartData, setChartData] = useState({
+    labels: ["Invested Amount", "Estimated Returns"],
+    datasets: [
+      {
+        data: [investedAmount, estReturn],
+        backgroundColor: ["rgb(24,26,41)", "rgb(140, 149, 226)"],
+        borderColor: "transparent",
+        hoverBackgroundColor: ["rgb(24,26,41)", "rgb(140, 149, 226)"], // Optional: colors on hover
+        hoverOffset: 4,
+      },
+    ],
+  });
 
   const calculateFutureValue = useCallback(() => {
     const monthlyRate = returns / 12 / 100; // Convert annual rate to monthly and percentage to decimal
@@ -34,50 +46,6 @@ function App() {
   const calculateEstimatedReturn = useCallback(() => {
     setEstReturn(Math.round(futureValue - investedAmount));
   }, [futureValue, investedAmount]);
-
-  const DisplayChart = useCallback(() => {
-    const data = {
-      labels: ["Invested Amount", "Estimated Returns"],
-      datasets: [
-        {
-          data: [investedAmount, estReturn],
-          backgroundColor: ["rgb(24,26,41)", "rgb(140, 149, 226)"],
-          borderColor: "transparent",
-          hoverBackgroundColor: ["rgb(24,26,41)", "rgb(140, 149, 226)"], // Optional: colors on hover
-          hoverOffset: 4,
-        },
-      ],
-    };
-
-    const options = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: true,
-          position: "bottom",
-          labels: {
-            padding: 20,
-          },
-        },
-        tooltip: {
-          callbacks: {
-            label: function (tooltipItem) {
-              return `${
-                tooltipItem.label
-              }: ₹${tooltipItem.raw.toLocaleString()}`;
-            },
-          },
-        },
-      },
-    };
-
-    return (
-      <div style={{ width:"350px", height: "350px" }}>
-        <Doughnut data={data} options={options} />
-      </div>
-    );
-  }, [investedAmount, estReturn]);
   
   useEffect(() => {
     calculateFutureValue();
@@ -92,8 +60,49 @@ function App() {
     calculateEstimatedReturn,
   ]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setChartData({
+        labels: ["Invested Amount", "Estimated Returns"],
+        datasets: [
+          {
+            data: [investedAmount, estReturn],
+            backgroundColor: ["rgb(24,26,41)", "rgb(140, 149, 226)"],
+            borderColor: "transparent",
+            hoverBackgroundColor: ["rgb(24,26,41)", "rgb(140, 149, 226)"], // Optional: colors on hover
+            hoverOffset: 4,
+          },
+        ],
+      });
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [investedAmount, estReturn, futureValue, duration, returns, amount, calculateFutureValue, calculateInvestedAmount, calculateEstimatedReturn]);
+
   const formatNumber = (num) => {
     return num.toLocaleString();
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+          padding: 20,
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem) {
+            return `${
+              tooltipItem.label
+            }: ₹${tooltipItem.raw.toLocaleString()}`;
+          },
+        },
+      },
+    },
   };
 
   return (
@@ -129,8 +138,8 @@ function App() {
             stepcount={1}
           />
         </div>
-        <div>
-          <DisplayChart investedAmount={investedAmount} estReturn={estReturn} />
+        <div style={{width: "350px", height: "350px"}}>
+          <Doughnut data={chartData} options={options} />
         </div>
       </div>
 
