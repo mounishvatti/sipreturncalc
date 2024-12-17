@@ -18,11 +18,11 @@ function App() {
   return (
     <>
       <Navbar />
-      <div className="flex flex-row justify-start gap-4 pb-6 pt-14 pl-8">
+      <div className="flex flex-row justify-center gap-6 p-8">
         <button
           id="sip"
-          className={`text-white rounded-full p-2 px-4 text-md ${
-            active === "sip" ? "bg-green-500/30" : ""
+          className={`transition-all duration-300 ease-in-out text-white rounded-full py-3 px-6 text-lg font-semibold hover:bg-amber-300/70 focus:outline-none ${
+            active === "sip" ? "bg-amber-300/30" : "bg-transparent"
           }`}
           onClick={handleClick}
         >
@@ -30,8 +30,8 @@ function App() {
         </button>
         <button
           id="lumpsum"
-          className={`text-white rounded-full p-2 px-4 text-md ${
-            active === "lumpsum" ? "bg-green-500/30" : ""
+          className={`transition-all duration-300 ease-in-out text-white rounded-full py-3 px-6 text-lg font-semibold hover:bg-amber-300/70 focus:outline-none ${
+            active === "lumpsum" ? "bg-amber-300/30" : "bg-transparent"
           }`}
           onClick={handleClick}
         >
@@ -39,17 +39,21 @@ function App() {
         </button>
         <button
           id="topup"
-          className={`text-white rounded-full p-2 px-4 text-md ${
-            active === "topup" ? "bg-green-500/30" : ""
+          className={`transition-all duration-300 ease-in-out text-white rounded-full py-3 px-6 text-lg font-semibold hover:bg-amber-300/70 focus:outline-none ${
+            active === "topup" ? "bg-amber-300/30" : "bg-transparent"
           }`}
           onClick={handleClick}
         >
           Top Up
         </button>
       </div>
-      {state === "sip" && <DisplaySIP />}
-      {state === "lumpsum" && <DisplayLumpsum />}
-      {state === "topup" && <DisplayTopup />}
+
+      {/* Display components based on the active state */}
+      <div className="w-full mx-auto m-4">
+        {state === "sip" && <DisplaySIP />}
+        {state === "lumpsum" && <DisplayLumpsum />}
+        {state === "topup" && <DisplayTopup />}
+      </div>
 
       <Footer />
     </>

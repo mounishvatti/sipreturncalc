@@ -12,28 +12,52 @@ function ComponentRange({
   stepcount,
 }) {
   return (
-    <>
-      <div className="flex items-center justify-between mb-4">
-        <label className="text-white/70 text-md md:text-lg font-sans font-semibold px-3">
+    <div className="w-full max-w-lg p-6 m-2 rounded-lg shadow-sm">
+      {/* Label */}
+      <div className="flex justify-between items-center mb-4">
+        <label className="text-gray-300 text-md md:text-lg font-sans font-semibold">
           {labeltext}
         </label>
-        <div className="rounded-sm px-4 border-none flex items-center space-x-2" style={{ backgroundColor: "rgb(27,53,45)", color: "rgb(82, 179, 144)" }}>
-          <span className="text-lg font-medium">{param1}</span>
-          <span className="text-sm">{units}</span>
+        {/* Styled Input Field */}
+        <div className="flex items-center bg-stone-700 px-3 py-1 rounded-md shadow-sm">
+          <input
+            type="number"
+            className="w-20 bg-transparent text-right text-amber-300 font-bold focus:outline-none"
+            min={minval}
+            max={maxval}
+            step={stepcount}
+            value={param1}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              if (value >= minval && value <= maxval) {
+                setParam1(value);
+              }
+            }}
+          />
+          <span className="text-gray-400 text-sm ml-2">{units}</span>
         </div>
       </div>
-      <div className="flex items-center w-full max-w-lg mx-auto mb-10">
+
+      {/* Slider */}
+      <div className="relative w-full">
         <input
           type="range"
-          className="slider w-full bg-transparent cursor-pointer appearance-auto focus:outline-none"
+          className="w-full h-2 bg-stone-800 rounded-lg appearance-none cursor-pointer focus:outline-none accent-amber-300"
           min={minval}
           step={stepcount}
           max={maxval}
           value={param1}
-          onChange={(e) => setParam1(e.target.value)}
+          onChange={(e) => setParam1(Number(e.target.value))}
         />
+        {/* Slider Track Style */}
+        <div
+          className="rounded-lg bg-amber-300"
+          style={{
+            width: `${((param1 - minval) / (maxval - minval)) * 100}%`,
+          }}
+        ></div>
       </div>
-    </>
+    </div>
   );
 }
 

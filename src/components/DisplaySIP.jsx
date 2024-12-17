@@ -17,9 +17,9 @@ function DisplaySIP() {
     datasets: [
       {
         data: [investedAmount, estReturn],
-        backgroundColor: ["rgb(24,26,41)", "rgb(140, 149, 226)"],
+        backgroundColor: ["rgb(210,168,70)", "rgb(89, 191, 126)"],
         borderColor: "transparent",
-        hoverBackgroundColor: ["rgb(24,26,41)", "rgb(140, 149, 226)"], // Optional: colors on hover
+        hoverBackgroundColor: ["rgb(210,168,70)", "rgb(89, 191, 126)"], // Optional: colors on hover
         hoverOffset: 4,
       },
     ],
@@ -66,9 +66,9 @@ function DisplaySIP() {
         datasets: [
           {
             data: [investedAmount, estReturn],
-            backgroundColor: ["rgb(24,26,41)", "rgb(140, 149, 226)"],
+            backgroundColor: ["rgb(210,168,70)", "rgb(89, 191, 126)"],
             borderColor: "transparent",
-            hoverBackgroundColor: ["rgb(24,26,41)", "rgb(140, 149, 226)"], // Optional: colors on hover
+            hoverBackgroundColor: ["rgb(210,168,70)", "rgb(89, 191, 126)"], // Optional: colors on hover
             hoverOffset: 4,
           },
         ],
@@ -115,7 +115,7 @@ function DisplaySIP() {
   return (
     <>
       <div className="flex flex-col md:flex-row items-center justify-between font-sans mt-2">
-        <div className="border-white/20 border p-4 md:p-8 rounded-lg w-full md:w-1/2">
+        <div className="p-4 md:p-8 rounded-lg w-full md:w-1/2">
           <ComponentRange
             labeltext="Monthly Investment"
             units="INR"
